@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry excluding="glguerin/io/imp/mac/jd1/|glguerin/io/imp/mac/jd2/|glguerin/io/imp/mac/ten/" kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/KSFL"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/PowerPaint"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/OpenXION"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
