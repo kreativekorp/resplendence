@@ -1,3 +1,4 @@
 Manifest-Version: 1.0
 Created-By: 2.0 (Kreative Software)
 Main-Class: com.kreative.resplendence.ResplMain
+Class-Path: jai_codec.jar jai_core.jar jai-imageio-core.jar jai-imageio-jpeg2000.jar KSFL.jar mlibwrapper_jai.jar MRJToolkitStubs.jar OpenXION.jar PowerPaint.jar QTJava.jar ual.jar dep/jai_codec.jar dep/jai_core.jar dep/jai-imageio-core.jar dep/jai-imageio-jpeg2000.jar dep/KSFL.jar dep/mlibwrapper_jai.jar dep/MRJToolkitStubs.jar dep/OpenXION.jar dep/PowerPaint.jar dep/QTJava.jar dep/ual.jar

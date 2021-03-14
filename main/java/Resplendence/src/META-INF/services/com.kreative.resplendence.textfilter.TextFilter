@@ -1,0 +1,9 @@
+com.kreative.resplendence.textfilter.AnalyzeWordCount
+com.kreative.resplendence.textfilter.CalculateConvert
+com.kreative.resplendence.textfilter.CalculateEvaluateExpression
+com.kreative.resplendence.textfilter.ChangeCase
+com.kreative.resplendence.textfilter.EncryptionROT13
+com.kreative.resplendence.textfilter.InsertBarGraph
+com.kreative.resplendence.textfilter.InsertMiscCrap
+com.kreative.resplendence.textfilter.InsertUnicodeCharacter
+com.kreative.resplendence.textfilter.Sort

@@ -152,7 +152,7 @@ public class TFEditorEnumeration extends JComboBox implements TFEditor {
 		return pos.skipBits(w);
 	}
 	
-	private class MyCellRenderer extends DefaultListCellRenderer implements ListCellRenderer {
+	private class MyCellRenderer extends DefaultListCellRenderer {
 		private static final long serialVersionUID = 1;
 		@Override
 		public Component getListCellRendererComponent(JList list, Object value, int index, boolean sel, boolean focus) {

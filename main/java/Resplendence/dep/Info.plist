@@ -35,8 +35,18 @@
 	<dict>
 		<key>ClassPath</key>
 		<array>
-			<string>$JAVAROOT</string>
+			<string>$JAVAROOT/jai_codec.jar</string>
+			<string>$JAVAROOT/jai_core.jar</string>
+			<string>$JAVAROOT/jai-imageio-core.jar</string>
+			<string>$JAVAROOT/jai-imageio-jpeg2000.jar</string>
+			<string>$JAVAROOT/KSFL.jar</string>
+			<string>$JAVAROOT/mlibwrapper_jai.jar</string>
+			<string>$JAVAROOT/MRJToolkitStubs.jar</string>
+			<string>$JAVAROOT/OpenXION.jar</string>
+			<string>$JAVAROOT/PowerPaint.jar</string>
+			<string>$JAVAROOT/QTJava.jar</string>
 			<string>$JAVAROOT/Resplendence.jar</string>
+			<string>$JAVAROOT/ual.jar</string>
 		</array>
 		<key>JVMVersion</key>
 		<string>1.5+</string>

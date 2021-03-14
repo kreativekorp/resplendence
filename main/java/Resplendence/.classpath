@@ -5,5 +5,16 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/KSFL"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/PowerPaint"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/OpenXION"/>
+	<classpathentry kind="lib" path="dep/jai_codec.jar"/>
+	<classpathentry kind="lib" path="dep/jai_core.jar"/>
+	<classpathentry kind="lib" path="dep/jai-imageio-core.jar"/>
+	<classpathentry kind="lib" path="dep/jai-imageio-jpeg2000.jar"/>
+	<classpathentry kind="lib" path="dep/KSFL.jar"/>
+	<classpathentry kind="lib" path="dep/mlibwrapper_jai.jar"/>
+	<classpathentry kind="lib" path="dep/MRJToolkitStubs.jar"/>
+	<classpathentry kind="lib" path="dep/OpenXION.jar"/>
+	<classpathentry kind="lib" path="dep/PowerPaint.jar"/>
+	<classpathentry kind="lib" path="dep/QTJava.jar"/>
+	<classpathentry kind="lib" path="dep/ual.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

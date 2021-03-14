@@ -1,0 +1,8 @@
+com.kreative.resplendence.filecodec.AppleDoubleFileCodec
+com.kreative.resplendence.filecodec.AppleSingleFileCodec
+com.kreative.resplendence.filecodec.BasiliskIIFileCodec
+com.kreative.resplendence.filecodec.BinHexFileCodec
+com.kreative.resplendence.filecodec.FileExchangeFileCodec
+com.kreative.resplendence.filecodec.MacBinaryFileCodec
+com.kreative.resplendence.filecodec.MacOSXFileCodec
+com.kreative.resplendence.filecodec.NativeFileCodec

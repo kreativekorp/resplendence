@@ -1,0 +1,8 @@
+com.kreative.resplendence.datafilter.BitTwiddling
+com.kreative.resplendence.datafilter.CRC
+com.kreative.resplendence.datafilter.EncodeDecodeASCII85
+com.kreative.resplendence.datafilter.EncodeDecodeBase64
+com.kreative.resplendence.datafilter.EncodeDecodeBase85
+com.kreative.resplendence.datafilter.EncodeDecodeHex
+com.kreative.resplendence.datafilter.EncryptionDigest
+com.kreative.resplendence.datafilter.EncryptionMemfrob

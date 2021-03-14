@@ -3,15 +3,11 @@ package com.kreative.resplendence;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
-import java.lang.reflect.Modifier;
-import java.net.*;
 import java.util.*;
 import java.util.List;
 import javax.swing.*;
 import javax.swing.event.*;
 
-import com.kreative.dff.*;
-import com.kreative.ksfl.*;
 import com.kreative.resplendence.acc.*;
 import com.kreative.resplendence.datafilter.*;
 import com.kreative.resplendence.editors.*;
@@ -393,28 +389,6 @@ public class ResplMain implements OSConstants, MenuConstants {
 		if (o instanceof TextFilter) registerTextFilter((TextFilter)o);
 	}
 	
-	public static boolean isPlugin(Object o) {
-		return (
-				   o instanceof AccessoryWindow
-				|| o instanceof DataFilter
-				|| o instanceof ResplendenceEditor
-				|| o instanceof FileCodec
-				|| o instanceof ResplendencePicker
-				|| o instanceof TextFilter
-		);
-	}
-	
-	public static boolean isPluginType(Class<?> c) {
-		return (
-				   c.equals(AccessoryWindow.class)
-				|| c.equals(DataFilter.class)
-				|| c.equals(ResplendenceEditor.class)
-				|| c.equals(FileCodec.class)
-				|| c.equals(ResplendencePicker.class)
-				|| c.equals(TextFilter.class)
-		);
-	}
-	
 	
 	// START IT ALL
 	public static void resplInit() {
@@ -456,109 +430,19 @@ public class ResplMain implements OSConstants, MenuConstants {
 	}
 	
 	private static void registerPlugins() {
-		String[] pkgs = {
-				"com.kreative.resplendence.acc",
-				"com.kreative.resplendence.datafilter",
-				"com.kreative.resplendence.editors",
-				"com.kreative.resplendence.filecodec",
-				"com.kreative.resplendence.pickers",
-				"com.kreative.resplendence.textfilter",
-				"test.acc"
+		Class<?>[] pluginClasses = {
+			AccessoryWindow.class,
+			DataFilter.class,
+			ResplendenceEditor.class,
+			FileCodec.class,
+			ResplendencePicker.class,
+			TextFilter.class,
 		};
-		for (String pkg : pkgs) {
-			try {
-				Class<?>[] clses = getClasses(pkg);
-				for (Class<?> cls : clses) {
-					if (!(
-							cls.isMemberClass()
-							|| cls.isAnonymousClass()
-							|| cls.isInterface()
-							|| Modifier.isAbstract(cls.getModifiers())
-					)) {
-						Class<?>[] faces = cls.getInterfaces();
-						for (Class<?> face : faces) {
-							if (isPluginType(face)) {
-								try {
-									registerPlugin(cls.newInstance());
-									break;
-								} catch (Exception e) {
-									e.printStackTrace();
-								}
-							}
-						}
-					}
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
+		for (Class<?> pluginClass : pluginClasses) {
+			for (Object o : ServiceLoader.load(pluginClass)) {
+				registerPlugin(o);
 			}
 		}
-		
-		DFFResourceProvider dp = ResplRsrcs.getAppDFFResourceProvider();
-		DFFClassLoader dl = new DFFClassLoader(dp);
-		Set<String> names = new HashSet<String>();
-		for (int id : dp.getIDs(KSFLConstants.ExecJava)) {
-			String name = dp.getNameFromID(KSFLConstants.ExecJava, id);
-			if (name.endsWith(".class")) name = name.substring(0, name.length()-6);
-			names.add(name);
-		}
-		for (String name : names) {
-			if (name != null && name.length() > 0) {
-				try {
-					Class<?> cls = dl.loadClass(name);
-					Class<?>[] faces = cls.getInterfaces();
-					for (Class<?> face : faces) {
-						if (isPluginType(face)) {
-							try {
-								registerPlugin(cls.newInstance());
-								break;
-							} catch (Exception e) {
-								e.printStackTrace();
-							}
-						}
-					}
-				} catch (Exception e) {}
-			}
-		}
-	}
-	
-	private static Class<?>[] getClasses(String pckgname) throws ClassNotFoundException {
-		ArrayList<Class<?>> classes = new ArrayList<Class<?>>();
-		// Get a File object for the package
-		File directory = null;
-		try {
-			ClassLoader cld = Thread.currentThread().getContextClassLoader();
-			if (cld == null) {
-				throw new ClassNotFoundException("Can't get class loader.");
-			}
-			//String path = "/"+pckgname.replace('.','/');
-			String path = pckgname.replace('.',File.separatorChar);
-			URL resource = cld.getResource(path);
-			if (resource == null) {
-				throw new ClassNotFoundException("No resource for "+path);
-			}
-			//directory = new File(resource.getFile());
-			directory = new File(URLDecoder.decode(resource.getPath(),"UTF-8"));
-		} catch (NullPointerException x) {
-			throw new ClassNotFoundException(pckgname+" ("+directory+") does not appear to be a valid package");
-		} catch (UnsupportedEncodingException x) {
-			throw new ClassNotFoundException(pckgname+" ("+directory+") does not appear to be a valid package");
-		}
-		if (directory.exists()) {
-			// Get the list of the files contained in the package
-			String[] files = directory.list();
-			for (int i = 0; i < files.length; i++) {
-				// we are only interested in .class files
-				if (files[i].endsWith(".class")) {
-					// removes the .class extension
-					classes.add(Class.forName(pckgname+'.'+files[i].substring(0, files[i].length()-6)));
-				}
-			}
-		} else {
-			throw new ClassNotFoundException(pckgname+" does not appear to be a valid package");
-		}
-		Class<?>[] classesA = new Class[classes.size()];
-		classes.toArray(classesA);
-		return classesA;
 	}
 	
 	public static ResplendenceEditorWindow resplOpen(File f) {
