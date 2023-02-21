@@ -135,6 +135,19 @@ public class TemplateField {
 	public static final int TYPE_FLOAT_3QUARTER_BE = 0x33515452;
 	public static final int TYPE_FLOAT_SINGLE_BE = 0x53494E47;
 	public static final int TYPE_FLOAT_DOUBLE_BE = 0x444F5542;
+	public static final int TYPE_FLOAT_QUADRUPLE_BE = 0x51554144;
+	public static final int TYPE_FLOAT_OCTUPLE_BE = 0x4F435455;
+	public static final int TYPE_FLOAT4_BE = 0x46503034;
+	public static final int TYPE_FLOAT8_BE = 0x46503038;
+	public static final int TYPE_FLOAT16_BE = 0x46503136;
+	public static final int TYPE_FLOAT24_BE = 0x46503234;
+	public static final int TYPE_FLOAT32_BE = 0x46503332;
+	public static final int TYPE_FLOAT48_BE = 0x46503438;
+	public static final int TYPE_FLOAT64_BE = 0x46503634;
+	
+	public static final int TYPE_UBEB128 = 0x55313238;
+	public static final int TYPE_SBEB128 = 0x53313238;
+	public static final int TYPE_BEFP128 = 0x46313238;
 	
 	public static final int TYPE_ENUM_BIT_BE = 0x45424954;
 	public static final int TYPE_ENUM_NIBBLE_BE = 0x454E4942;
@@ -217,7 +230,7 @@ public class TemplateField {
 	public static final int TYPE_LIST_COUNTED_BE = 0x4C535443;
 	public static final int TYPE_LIST_END_BE = 0x4C535445;
 	
-	public static final int TYPE_HEADER_BE = 0x48454144;
+	public static final int TYPE_HEADER_BE = 0x48454453;
 	public static final int TYPE_LABEL_BE = 0x4C41424C;
 	public static final int TYPE_COMMENT_BE = 0x434D4E54;
 	public static final int TYPE_SEPARATOR_BE = 0x53455041;
@@ -226,6 +239,10 @@ public class TemplateField {
 	public static final int TYPE_ELSE_IF_BE = 0x454C4946;
 	public static final int TYPE_ELSE_BE = 0x454C5345;
 	public static final int TYPE_END_IF_BE = 0x454E4946;
+	public static final int TYPE_SWITCH_BE = 0x53574348;
+	public static final int TYPE_CASE_BE = 0x43415345;
+	public static final int TYPE_DEFAULT_BE = 0x44464C54;
+	public static final int TYPE_END_SWITCH_BE = 0x454E5357;
 	public static final int TYPE_TEXT_ENCODING_BE = 0x54454E43;
 	
 	public static final int TYPE_DEC_NIBBLE_LE = 0x42494E44;
@@ -360,6 +377,19 @@ public class TemplateField {
 	public static final int TYPE_FLOAT_3QUARTER_LE = 0x52545133;
 	public static final int TYPE_FLOAT_SINGLE_LE = 0x474E4953;
 	public static final int TYPE_FLOAT_DOUBLE_LE = 0x42554F44;
+	public static final int TYPE_FLOAT_QUADRUPLE_LE = 0x44415551;
+	public static final int TYPE_FLOAT_OCTUPLE_LE = 0x5554434F;
+	public static final int TYPE_FLOAT4_LE = 0x34305046;
+	public static final int TYPE_FLOAT8_LE = 0x38305046;
+	public static final int TYPE_FLOAT16_LE = 0x36315046;
+	public static final int TYPE_FLOAT24_LE = 0x34325046;
+	public static final int TYPE_FLOAT32_LE = 0x32335046;
+	public static final int TYPE_FLOAT48_LE = 0x38345046;
+	public static final int TYPE_FLOAT64_LE = 0x34365046;
+	
+	public static final int TYPE_ULEB128 = 0x38323155;
+	public static final int TYPE_SLEB128 = 0x38323153;
+	public static final int TYPE_LEFP128 = 0x38323146;
 	
 	public static final int TYPE_ENUM_BIT_LE = 0x54494245;
 	public static final int TYPE_ENUM_NIBBLE_LE = 0x42494E45;
@@ -442,7 +472,7 @@ public class TemplateField {
 	public static final int TYPE_LIST_COUNTED_LE = 0x4354534C;
 	public static final int TYPE_LIST_END_LE = 0x4554534C;
 	
-	public static final int TYPE_HEADER_LE = 0x44414548;
+	public static final int TYPE_HEADER_LE = 0x52444548;
 	public static final int TYPE_LABEL_LE = 0x4C42414C;
 	public static final int TYPE_SEPARATOR_LE = 0x41504553;
 	public static final int TYPE_COMMENT_LE = 0x544E4D43;
@@ -451,6 +481,10 @@ public class TemplateField {
 	public static final int TYPE_ELSE_IF_LE = 0x46494C45;
 	public static final int TYPE_ELSE_LE = 0x45534C45;
 	public static final int TYPE_END_IF_LE = 0x46494E45;
+	public static final int TYPE_SWITCH_LE = 0x48435753;
+	public static final int TYPE_CASE_LE = 0x45534143;
+	public static final int TYPE_DEFAULT_LE = 0x544C4644;
+	public static final int TYPE_END_SWITCH_LE = 0x57534E45;
 	public static final int TYPE_TEXT_ENCODING_LE = 0x434E4554;
 	
 	public static boolean isDecimalType(int t) {
@@ -1266,6 +1300,18 @@ public class TemplateField {
 		case TYPE_FLOAT_3QUARTER_BE: break;
 		case TYPE_FLOAT_SINGLE_BE: break;
 		case TYPE_FLOAT_DOUBLE_BE: break;
+		case TYPE_FLOAT_QUADRUPLE_BE: break;
+		case TYPE_FLOAT_OCTUPLE_BE: break;
+		case TYPE_FLOAT4_BE: break;
+		case TYPE_FLOAT8_BE: break;
+		case TYPE_FLOAT16_BE: break;
+		case TYPE_FLOAT24_BE: break;
+		case TYPE_FLOAT32_BE: break;
+		case TYPE_FLOAT48_BE: break;
+		case TYPE_FLOAT64_BE: break;
+		case TYPE_UBEB128: break;
+		case TYPE_SBEB128: break;
+		case TYPE_BEFP128: break;
 		case TYPE_ENUM_BIT_BE: break;
 		case TYPE_ENUM_NIBBLE_BE: break;
 		case TYPE_ENUM_BYTE_BE: break;
@@ -1347,6 +1393,10 @@ public class TemplateField {
 		case TYPE_ELSE_IF_BE: break;
 		case TYPE_ELSE_BE: break;
 		case TYPE_END_IF_BE: break;
+		case TYPE_SWITCH_BE: break;
+		case TYPE_CASE_BE: break;
+		case TYPE_DEFAULT_BE: break;
+		case TYPE_END_SWITCH_BE: break;
 		case TYPE_TEXT_ENCODING_BE: break;
 		case TYPE_DEC_NIBBLE_LE: break;
 		case TYPE_DEC_BYTE_LE: break;
@@ -1472,6 +1522,18 @@ public class TemplateField {
 		case TYPE_FLOAT_3QUARTER_LE: break;
 		case TYPE_FLOAT_SINGLE_LE: break;
 		case TYPE_FLOAT_DOUBLE_LE: break;
+		case TYPE_FLOAT_QUADRUPLE_LE: break;
+		case TYPE_FLOAT_OCTUPLE_LE: break;
+		case TYPE_FLOAT4_LE: break;
+		case TYPE_FLOAT8_LE: break;
+		case TYPE_FLOAT16_LE: break;
+		case TYPE_FLOAT24_LE: break;
+		case TYPE_FLOAT32_LE: break;
+		case TYPE_FLOAT48_LE: break;
+		case TYPE_FLOAT64_LE: break;
+		case TYPE_ULEB128: break;
+		case TYPE_SLEB128: break;
+		case TYPE_LEFP128: break;
 		case TYPE_ENUM_BIT_LE: break;
 		case TYPE_ENUM_NIBBLE_LE: break;
 		case TYPE_ENUM_BYTE_LE: break;
@@ -1553,6 +1615,10 @@ public class TemplateField {
 		case TYPE_ELSE_IF_LE: break;
 		case TYPE_ELSE_LE: break;
 		case TYPE_END_IF_LE: break;
+		case TYPE_SWITCH_LE: break;
+		case TYPE_CASE_LE: break;
+		case TYPE_DEFAULT_LE: break;
+		case TYPE_END_SWITCH_LE: break;
 		case TYPE_TEXT_ENCODING_LE: break;
 		}
 	}

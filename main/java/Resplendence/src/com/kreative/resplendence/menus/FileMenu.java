@@ -9,18 +9,16 @@ import com.kreative.resplendence.misc.*;
 
 public class FileMenu extends JMenu implements MenuConstants {
 	private static final long serialVersionUID = 1L;
-	private static final JFileChooser fchoos = new JFileChooser();
+	
+	private static String lastOpenDirectory = null;
+	private static String lastSaveDirectory = null;
 	
 	private JMenu recentMenu, specialMenu;
-
+	
 	public FileMenu(long features) {
 		super("File");
 		boolean mac = ResplMain.RUNNING_ON_MAC_OS;
-		if (mac) {
-			fchoos.putClientProperty("JFileChooser.packageIsTraversable", "always");
-			fchoos.putClientProperty("JFileChooser.appBundleIsTraversable", "always");
-		}
-		else setMnemonic(KeyEvent.VK_F);
+		if (!mac) setMnemonic(KeyEvent.VK_F);
 		
 		JMenuItem mi;
 		if (mac || (features & MENUS_GLOBAL)>0) {
@@ -29,17 +27,21 @@ public class FileMenu extends JMenu implements MenuConstants {
 			mi.setAccelerator(KeyStroke.getKeyStroke('N', META_MASK));
 			mi.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					FileDialog fd = new FileDialog(new Frame(), "New File", FileDialog.SAVE);
+					Frame frame = new Frame();
+					FileDialog fd = new FileDialog(frame, "New File", FileDialog.SAVE);
+					if (lastSaveDirectory != null) fd.setDirectory(lastSaveDirectory);
 					fd.setVisible(true);
-					if (fd.getFile() != null) {
-						final File f = new File(fd.getDirectory()+System.getProperty("file.separator")+fd.getFile());
-						Window w = new NewFileWindow(f, null);
-						w.addWindowListener(new WindowAdapter() {
-							public void windowClosed(WindowEvent we) {
-								ResplMain.resplOpen(f);
-							}
-						});
-					}
+					String ds = fd.getDirectory(), fs = fd.getFile();
+					fd.dispose();
+					frame.dispose();
+					if (ds == null || fs == null) return;
+					final File f = new File((lastSaveDirectory = ds), fs);
+					Window w = new NewFileWindow(f, null);
+					w.addWindowListener(new WindowAdapter() {
+						public void windowClosed(WindowEvent we) {
+							ResplMain.resplOpen(f);
+						}
+					});
 				}
 			});
 			add(mi);
@@ -48,16 +50,20 @@ public class FileMenu extends JMenu implements MenuConstants {
 			mi.setAccelerator(KeyStroke.getKeyStroke('N', META_SHIFT_MASK));
 			mi.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					FileDialog fd = new FileDialog(new Frame(), "New Folder", FileDialog.SAVE);
+					Frame frame = new Frame();
+					FileDialog fd = new FileDialog(frame, "New Folder", FileDialog.SAVE);
+					if (lastSaveDirectory != null) fd.setDirectory(lastSaveDirectory);
 					fd.setVisible(true);
-					if (fd.getFile() != null) {
-						File f = new File(fd.getDirectory()+System.getProperty("file.separator")+fd.getFile());
-						try {
-							f.mkdir();
-							ResplMain.resplOpen(f);
-						} catch (Exception ioe) {
-							JOptionPane.showMessageDialog(null, "The folder could not be created.", "New Folder", JOptionPane.ERROR_MESSAGE);
-						}
+					String ds = fd.getDirectory(), fs = fd.getFile();
+					fd.dispose();
+					frame.dispose();
+					if (ds == null || fs == null) return;
+					File file = new File((lastSaveDirectory = ds), fs);
+					try {
+						file.mkdir();
+						ResplMain.resplOpen(file);
+					} catch (Exception ioe) {
+						JOptionPane.showMessageDialog(null, "The folder could not be created.", "New Folder", JOptionPane.ERROR_MESSAGE);
 					}
 				}
 			});
@@ -67,12 +73,16 @@ public class FileMenu extends JMenu implements MenuConstants {
 			mi.setAccelerator(KeyStroke.getKeyStroke('O', META_MASK));
 			mi.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					FileDialog fd = new FileDialog(new Frame(), "Open File", FileDialog.LOAD);
+					Frame frame = new Frame();
+					FileDialog fd = new FileDialog(frame, "Open File", FileDialog.LOAD);
+					if (lastOpenDirectory != null) fd.setDirectory(lastOpenDirectory);
 					fd.setVisible(true);
-					if (fd.getFile() != null) {
-						File f = new File(fd.getDirectory()+System.getProperty("file.separator")+fd.getFile());
-						ResplMain.resplOpen(f);
-					}
+					String ds = fd.getDirectory(), fs = fd.getFile();
+					fd.dispose();
+					frame.dispose();
+					if (ds == null || fs == null) return;
+					File file = new File((lastOpenDirectory = ds), fs);
+					ResplMain.resplOpen(file);
 				}
 			});
 			add(mi);
@@ -81,12 +91,16 @@ public class FileMenu extends JMenu implements MenuConstants {
 			mi.setAccelerator(KeyStroke.getKeyStroke('O', META_ALT_MASK));
 			mi.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					fchoos.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-					fchoos.setFileHidingEnabled(true);
-					fchoos.setMultiSelectionEnabled(false);
-					if (fchoos.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-						File f = fchoos.getSelectedFile();
-						ResplMain.resplOpen(f);
+					JFileChooser fc = new JFileChooser();
+					fc.putClientProperty("JFileChooser.packageIsTraversable", "always");
+					fc.putClientProperty("JFileChooser.appBundleIsTraversable", "always");
+					if (lastOpenDirectory != null) fc.setCurrentDirectory(new File(lastOpenDirectory));
+					fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+					fc.setFileHidingEnabled(true);
+					fc.setMultiSelectionEnabled(false);
+					if (fc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+						lastOpenDirectory = fc.getCurrentDirectory().getPath();
+						ResplMain.resplOpen(fc.getSelectedFile());
 					}
 				}
 			});
@@ -96,12 +110,16 @@ public class FileMenu extends JMenu implements MenuConstants {
 			mi.setAccelerator(KeyStroke.getKeyStroke('O', META_ALT_SHIFT_MASK));
 			mi.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					fchoos.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-					fchoos.setFileHidingEnabled(false);
-					fchoos.setMultiSelectionEnabled(false);
-					if (fchoos.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-						File f = fchoos.getSelectedFile();
-						ResplMain.resplOpen(f);
+					JFileChooser fc = new JFileChooser();
+					fc.putClientProperty("JFileChooser.packageIsTraversable", "always");
+					fc.putClientProperty("JFileChooser.appBundleIsTraversable", "always");
+					if (lastOpenDirectory != null) fc.setCurrentDirectory(new File(lastOpenDirectory));
+					fc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+					fc.setFileHidingEnabled(false);
+					fc.setMultiSelectionEnabled(false);
+					if (fc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+						lastOpenDirectory = fc.getCurrentDirectory().getPath();
+						ResplMain.resplOpen(fc.getSelectedFile());
 					}
 				}
 			});
@@ -131,18 +149,23 @@ public class FileMenu extends JMenu implements MenuConstants {
 			mi.setEnabled((features & MENUS_IMPORT_EXPORT)>0);
 			mi.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					FileDialog fd = new FileDialog(new Frame(), "Import", FileDialog.LOAD);
+					Frame frame = new Frame();
+					FileDialog fd = new FileDialog(frame, "Import", FileDialog.LOAD);
+					if (lastOpenDirectory != null) fd.setDirectory(lastOpenDirectory);
 					fd.setVisible(true);
-					if (fd.getFile() != null) {
-						ResplMain.sendResplendenceEventToFrontmost(
-								new ResplendenceEvent(
-										e.getSource(),
-										ResplendenceEvent.IMPORT_FILE,
-										"Import File...",
-										new File(fd.getDirectory()+System.getProperty("file.separator")+fd.getFile())
-								)
-						);
-					}
+					String ds = fd.getDirectory(), fs = fd.getFile();
+					fd.dispose();
+					frame.dispose();
+					if (ds == null || fs == null) return;
+					File file = new File((lastOpenDirectory = ds), fs);
+					ResplMain.sendResplendenceEventToFrontmost(
+						new ResplendenceEvent(
+							e.getSource(),
+							ResplendenceEvent.IMPORT_FILE,
+							"Import File...",
+							file
+						)
+					);
 				}
 			});
 			add(mi);
@@ -152,18 +175,23 @@ public class FileMenu extends JMenu implements MenuConstants {
 			mi.setEnabled((features & MENUS_IMPORT_EXPORT)>0);
 			mi.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					FileDialog fd = new FileDialog(new Frame(), "Export", FileDialog.SAVE);
+					Frame frame = new Frame();
+					FileDialog fd = new FileDialog(frame, "Export", FileDialog.SAVE);
+					if (lastSaveDirectory != null) fd.setDirectory(lastSaveDirectory);
 					fd.setVisible(true);
-					if (fd.getFile() != null) {
-						ResplMain.sendResplendenceEventToFrontmost(
-								new ResplendenceEvent(
-										e.getSource(),
-										ResplendenceEvent.EXPORT_FILE,
-										"Export File...",
-										new File(fd.getDirectory()+System.getProperty("file.separator")+fd.getFile())
-								)
-						);
-					}
+					String ds = fd.getDirectory(), fs = fd.getFile();
+					fd.dispose();
+					frame.dispose();
+					if (ds == null || fs == null) return;
+					File file = new File((lastSaveDirectory = ds), fs);
+					ResplMain.sendResplendenceEventToFrontmost(
+						new ResplendenceEvent(
+							e.getSource(),
+							ResplendenceEvent.EXPORT_FILE,
+							"Export File...",
+							file
+						)
+					);
 				}
 			});
 			add(mi);
@@ -190,15 +218,23 @@ public class FileMenu extends JMenu implements MenuConstants {
 			mi.setEnabled((features & MENUS_SAVE_REVERT)>0);
 			mi.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					FileDialog fd = new FileDialog(new Frame(), "Save As", FileDialog.SAVE);
+					Frame frame = new Frame();
+					FileDialog fd = new FileDialog(frame, "Save As", FileDialog.SAVE);
+					if (lastSaveDirectory != null) fd.setDirectory(lastSaveDirectory);
 					fd.setVisible(true);
-					if (fd.getFile() != null) {
-						ResplMain.sendResplendenceEventToFrontmost(
-								new ResplendenceEvent(
-										e.getSource(), ResplendenceEvent.SAVE_AS, "Save As...", new File(fd.getDirectory()+System.getProperty("file.separator")+fd.getFile())
-								)
-						);
-					}
+					String ds = fd.getDirectory(), fs = fd.getFile();
+					fd.dispose();
+					frame.dispose();
+					if (ds == null || fs == null) return;
+					File file = new File((lastSaveDirectory = ds), fs);
+					ResplMain.sendResplendenceEventToFrontmost(
+						new ResplendenceEvent(
+							e.getSource(),
+							ResplendenceEvent.SAVE_AS,
+							"Save As...",
+							file
+						)
+					);
 				}
 			});
 			add(mi);
@@ -207,15 +243,23 @@ public class FileMenu extends JMenu implements MenuConstants {
 			mi.setEnabled((features & MENUS_SAVE_REVERT)>0);
 			mi.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					FileDialog fd = new FileDialog(new Frame(), "Save a Copy", FileDialog.SAVE);
+					Frame frame = new Frame();
+					FileDialog fd = new FileDialog(frame, "Save a Copy", FileDialog.SAVE);
+					if (lastSaveDirectory != null) fd.setDirectory(lastSaveDirectory);
 					fd.setVisible(true);
-					if (fd.getFile() != null) {
-						ResplMain.sendResplendenceEventToFrontmost(
-								new ResplendenceEvent(
-										e.getSource(), ResplendenceEvent.SAVE_A_COPY, "Save a Copy...", new File(fd.getDirectory()+System.getProperty("file.separator")+fd.getFile())
-								)
-						);
-					}
+					String ds = fd.getDirectory(), fs = fd.getFile();
+					fd.dispose();
+					frame.dispose();
+					if (ds == null || fs == null) return;
+					File file = new File((lastSaveDirectory = ds), fs);
+					ResplMain.sendResplendenceEventToFrontmost(
+						new ResplendenceEvent(
+							e.getSource(),
+							ResplendenceEvent.SAVE_A_COPY,
+							"Save a Copy...",
+							file
+						)
+					);
 				}
 			});
 			add(mi);

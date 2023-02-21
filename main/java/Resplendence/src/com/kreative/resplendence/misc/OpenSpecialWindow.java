@@ -4,7 +4,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.util.Vector;
-
 import javax.swing.*;
 import com.kreative.resplendence.*;
 
@@ -21,14 +20,14 @@ public class OpenSpecialWindow extends JFrame {
 		instance.setVisible(true);
 	}
 	
-	private DefaultListModel model;
-	private JList list;
+	private final DefaultListModel model = new DefaultListModel();
+	private final JList list = new JList(model);
+	private String lastOpenDirectory = null;
+	
 	public OpenSpecialWindow() {
 		super("Modify Special Menu");
 		ResplMain.registerWindow(this);
 		JPanel main = new JPanel(new BorderLayout(12,4));
-		model = new DefaultListModel();
-		list = new JList(model);
 		JScrollPane spane = new JScrollPane(list, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		main.add(spane, BorderLayout.CENTER);
 		java.util.List<File> ss = ResplPrefs.getFiles("Special Files");
@@ -38,23 +37,26 @@ public class OpenSpecialWindow extends JFrame {
 		addButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				FileDialog fd = new FileDialog(OpenSpecialWindow.this, "Add File", FileDialog.LOAD);
+				if (lastOpenDirectory != null) fd.setDirectory(lastOpenDirectory);
 				fd.setVisible(true);
-				if (fd.getFile() != null) {
-					String s = System.getProperty("file.separator");
-					String path = fd.getDirectory();
-					if (!path.endsWith(s)) path += s;
-					path += fd.getFile();
-					model.addElement(new File(path));
-				}
+				String ds = fd.getDirectory(), fs = fd.getFile();
+				fd.dispose();
+				if (ds == null || fs == null) return;
+				File file = new File((lastOpenDirectory = ds), fs);
+				model.addElement(file);
 			}
 		});
 		JButton addFButton = new JButton("Add Folder...");
 		addFButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser fc = new JFileChooser();
+				fc.putClientProperty("JFileChooser.packageIsTraversable", "always");
+				fc.putClientProperty("JFileChooser.appBundleIsTraversable", "always");
+				if (lastOpenDirectory != null) fc.setCurrentDirectory(new File(lastOpenDirectory));
 				fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 				fc.setMultiSelectionEnabled(false);
 				if (fc.showOpenDialog(OpenSpecialWindow.this) == JFileChooser.APPROVE_OPTION) {
+					lastOpenDirectory = fc.getCurrentDirectory().getPath();
 					model.addElement(fc.getSelectedFile());
 				}
 			}

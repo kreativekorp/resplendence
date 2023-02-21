@@ -3,11 +3,12 @@ package com.kreative.resplendence;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.*;
 import java.util.List;
 import javax.swing.*;
 import javax.swing.event.*;
-
 import com.kreative.resplendence.acc.*;
 import com.kreative.resplendence.datafilter.*;
 import com.kreative.resplendence.editors.*;
@@ -27,9 +28,28 @@ public class ResplMain implements OSConstants, MenuConstants {
 				f.add(new File(arg));
 			}
 		}
+		
+		try { System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Resplendence"); } catch (Exception e) {}
+		try { System.setProperty("apple.laf.useScreenMenuBar", "true"); } catch (Exception e) {}
+		try { System.setProperty("apple.awt.use-file-dialog-packages", "false"); } catch (Exception e) {}
+		try { UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName()); } catch (Exception e) {}
+		
 		try {
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			Method getModule = Class.class.getMethod("getModule");
+			Object javaDesktop = getModule.invoke(Toolkit.getDefaultToolkit().getClass());
+			Object allUnnamed = getModule.invoke(ResplMain.class);
+			Class<?> module = Class.forName("java.lang.Module");
+			Method addOpens = module.getMethod("addOpens", String.class, module);
+			addOpens.invoke(javaDesktop, "sun.awt.X11", allUnnamed);
 		} catch (Exception e) {}
+		
+		try {
+			Toolkit tk = Toolkit.getDefaultToolkit();
+			Field aacn = tk.getClass().getDeclaredField("awtAppClassName");
+			aacn.setAccessible(true);
+			aacn.set(tk, "Resplendence");
+		} catch (Exception e) {}
+		
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				resplInit(f.toArray(new File[0]));
@@ -396,12 +416,6 @@ public class ResplMain implements OSConstants, MenuConstants {
 	}
 	
 	public static void resplInit(File[] toOpen) {
-		//set Mac OS properties
-		if (RUNNING_ON_MAC_OS) {
-			System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Resplendence");
-			System.setProperty("apple.laf.useScreenMenuBar", "true");
-			System.setProperty("apple.awt.use-file-dialog-packages", "false");
-		}
 		//set version number property
 		System.setProperty("com.kreative.resplendence.version", "2.0");
 		//setup for trapping modifiers
